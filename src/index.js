@@ -1,6 +1,9 @@
 // Disable due to core architecture
 /* eslint-disable camelcase */
 /* eslint-disable import/prefer-default-export */
+import React from 'react';
+import { ListAlt, AddCircleOutline } from '@material-ui/icons';
+import { FormattedMessage } from '@openimis/fe-core';
 import messages_en from './translations/en.json';
 import reducer from './reducer';
 import GrievanceMainMenu from './menu/GrievanceMainMenu';
@@ -13,6 +16,11 @@ import CategoryPicker from './pickers/CategoryPicker';
 import GrievanceConfigurationDialog from './dialogs/GrievanceConfigurationDialog';
 import ChannelPicker from './pickers/ChannelPicker';
 import FlagPicker from './pickers/FlagsPicker';
+import {
+  MODULE_NAME,
+  RIGHT_TICKET_ADD,
+  RIGHT_TICKET_SEARCH,
+} from './constants';
 
 const ROUTE_TICKET_TICKETS = 'ticket/tickets';
 const ROUTE_TICKET_TICKET = 'ticket/ticket';
@@ -42,7 +50,23 @@ const DEFAULT_CONFIG = {
     { path: `${ROUTE_TICKET_TICKET}/:ticket_uuid?/:version?`, component: TicketPage },
     { path: `${ROUTE_TICKET_NEW_TICKET}`, component: TicketPage },
   ],
-  'core.MainMenu': [GrievanceMainMenu],
+  'core.MainMenu': [{ name: 'GrievanceMainMenu', component: GrievanceMainMenu }],
+  'grievance.MainMenu': [
+    {
+      text: <FormattedMessage module={MODULE_NAME} id="menu.grievance.grievances" />,
+      icon: <ListAlt />,
+      route: `/${ROUTE_TICKET_TICKETS}`,
+      filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
+      id: 'grievance.grievances',
+    },
+    {
+      text: <FormattedMessage module={MODULE_NAME} id="menu.grievance.add" />,
+      icon: <AddCircleOutline />,
+      route: `/${ROUTE_TICKET_NEW_TICKET}`,
+      filter: (rights) => rights.includes(RIGHT_TICKET_ADD),
+      id: 'grievance.add',
+    },
+  ],
 
 };
 

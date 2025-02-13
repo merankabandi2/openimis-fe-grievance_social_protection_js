@@ -22,12 +22,14 @@ function GrievanceMainMenu(props) {
       icon: <ListAlt />,
       route: `/${ROUTE_TICKET_TICKETS}`,
       filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
+      id: 'grievance.grievances',
     },
     {
       text: formatMessage(props.intl, MODULE_NAME, 'menu.grievance.add'),
       icon: <AddCircleOutline />,
       route: `/${ROUTE_TICKET_NEW_TICKET}`,
       filter: (rights) => rights.includes(RIGHT_TICKET_ADD),
+      id: 'grievance.add',
     },
   ];
   entries.push(
@@ -41,6 +43,7 @@ function GrievanceMainMenu(props) {
       {...props}
       header={formatMessage(props.intl, MODULE_NAME, 'mainMenuGrievance')}
       entries={entries}
+      menuId="GrievanceMainMenu"
     />
   );
 }
