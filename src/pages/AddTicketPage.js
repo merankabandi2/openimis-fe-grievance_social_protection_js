@@ -173,6 +173,18 @@ class AddTicketPage extends Component {
                     )}
                   </>
                 )}
+                {grievantType === 'user' && (
+                  <Grid item xs={6} className={classes.item}>
+                    <PublishedComponent
+                      pubRef="admin.UserPicker"
+                      value={stateEdited.reporter}
+                      label="Complainant"
+                      onChange={(v) => this.updateAttribute('reporter', v)}
+                      benefitPlan={benefitPlan}
+                      readOnly={isSaved}
+                    />
+                  </Grid>
+                )}
               </Grid>
               <Divider />
               <Grid container className={classes.item}>
@@ -359,7 +371,12 @@ class AddTicketPage extends Component {
                     onClick={this.save}
                     disabled={
                       (!stateEdited.channel || !stateEdited.flags || !stateEdited.title || isSaved)
-                      || ((stateEdited.reporterType === 'individual' || stateEdited.reporterType === 'beneficiary') && stateEdited.reporter === null)
+                      || ((
+                        stateEdited.reporterType === 'individual'
+                        || stateEdited.reporterType === 'beneficiary'
+                        || stateEdited.reporterType === 'user')
+                        && stateEdited.reporter === null
+                      )
                     }
                   >
                     <Save />
