@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable react/no-unused-state */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/destructuring-assignment */
@@ -356,8 +357,10 @@ class AddTicketPage extends Component {
                     component="label"
                     color="primary"
                     onClick={this.save}
-                    // eslint-disable-next-line max-len
-                    disabled={!stateEdited.channel || !stateEdited.flags || !stateEdited.channel || !stateEdited.title || isSaved}
+                    disabled={
+                      (!stateEdited.channel || !stateEdited.flags || !stateEdited.title || isSaved)
+                      || ((stateEdited.reporterType === 'individual' || stateEdited.reporterType === 'beneficiary') && stateEdited.reporter === null)
+                    }
                   >
                     <Save />
                   </IconButton>
