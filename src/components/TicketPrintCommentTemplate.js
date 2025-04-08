@@ -84,7 +84,7 @@ const TicketPrintCommentTemplate = forwardRef(({ ticketComments }, ref) => {
 
     if (commenterTypeName === 'individual') {
       const commenterData = JSON.parse(JSON.parse(commenter));
-      return `Individual: ${commenterData.firstName} ${commenterData.lastName}`;
+      return `Individual: ${commenterData?.firstName} ${commenterData?.lastName}`;
     }
 
     if (commenterTypeName === 'user') {
