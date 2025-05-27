@@ -15,6 +15,8 @@ import {
   formatMessage,
 } from '@openimis/fe-core';
 import { MODULE_NAME } from '../constants';
+import MultiCategoryPicker from '../pickers/MultiCategoryPicker';
+import MultiChannelPicker from '../pickers/MultiChannelPicker';
 
 const styles = (theme) => ({
   dialogTitle: theme.dialog.title,
@@ -176,15 +178,124 @@ class TicketFilter extends Component {
           id="ticket.category"
           field={(
             <Grid item xs={3} className={classes.item}>
-              <PublishedComponent
-                pubRef="grievanceSocialProtection.DropDownCategoryPicker"
-                withNull
+              <MultiCategoryPicker
                 value={this._filterValue('category')}
                 onChange={(v) => this.debouncedOnChangeFilter([
                   {
                     id: 'category',
                     value: v,
                     filter: `category_Icontains: "${v}"`,
+                  },
+                ])}
+              />
+            </Grid>
+                      )}
+        />
+        <ControlledField
+          module={MODULE_NAME}
+          id="ticket.channel"
+          field={(
+            <Grid item xs={3} className={classes.item}>
+              <MultiChannelPicker
+                value={this._filterValue('channel')}
+                onChange={(v) => this.debouncedOnChangeFilter([
+                  {
+                    id: 'channel',
+                    value: v,
+                    filter: `channel_Icontains: "${v}"`,
+                  },
+                ])}
+              />
+            </Grid>
+                      )}
+        />
+        <ControlledField
+          module={MODULE_NAME}
+          id="ticket.isBeneficiary"
+          field={(
+            <Grid item xs={2} className={classes.item}>
+              <FormControlLabel
+                control={(
+                  <Checkbox
+                    color="primary"
+                    checked={!!this._filterValue('isBeneficiary')}
+                    onChange={(event) => this.debouncedOnChangeFilter([
+                      {
+                        id: 'isBeneficiary',
+                        value: event.target.checked,
+                        filter: `isBeneficiary: ${event.target.checked}`,
+                      },
+                    ])}
+                  />
+                                )}
+                label={formatMessage(this.props.intl, MODULE_NAME, 'ticket.isBeneficiary')}
+              />
+            </Grid>
+                      )}
+        />
+        <ControlledField
+          module={MODULE_NAME}
+          id="ticket.isBatwa"
+          field={(
+            <Grid item xs={2} className={classes.item}>
+              <FormControlLabel
+                control={(
+                  <Checkbox
+                    color="primary"
+                    checked={!!this._filterValue('isBatwa')}
+                    onChange={(event) => this.debouncedOnChangeFilter([
+                      {
+                        id: 'isBatwa',
+                        value: event.target.checked,
+                        filter: `isBatwa: ${event.target.checked}`,
+                      },
+                    ])}
+                  />
+                                )}
+                label={formatMessage(this.props.intl, MODULE_NAME, 'ticket.isBatwa')}
+              />
+            </Grid>
+                      )}
+        />
+        <ControlledField
+          module={MODULE_NAME}
+          id="ticket.province"
+          field={(
+            <Grid item xs={3} className={classes.item}>
+              <PublishedComponent
+                pubRef="location.LocationPicker"
+                withNull
+                value={this._filterValue('province')}
+                locationLevel={0}
+                label={formatMessage(this.props.intl, MODULE_NAME, 'ticket.province')}
+                onChange={(v) => this.debouncedOnChangeFilter([
+                  {
+                    id: 'province',
+                    value: v,
+                    filter: `province: "${decodeId(v?.id)}"`,
+                  },
+                ])}
+              />
+            </Grid>
+                      )}
+        />
+        <ControlledField
+          module={MODULE_NAME}
+          id="ticket.commune"
+          field={(
+            <Grid item xs={3} className={classes.item}>
+              <PublishedComponent
+                pubRef="location.LocationPicker"
+                withNull
+                value={this._filterValue('reporterCommune')}
+                locationLevel={1}
+                parentLocation={this._filterValue('reporterProvince')}
+                label={formatMessage(this.props.intl, MODULE_NAME, 'ticket.reporterCommune')}
+                onChange={(v) => this.debouncedOnChangeFilter([
+                  {
+                    id: 'reporterCommune',
+                    value: v,
+                    filter: `reporterCommune: "${decodeId(v?.id)}"`,
                   },
                 ])}
               />

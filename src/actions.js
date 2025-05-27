@@ -38,7 +38,15 @@ export function fetchTicketSummaries(mm, filters) {
     'priority', 'dueDate', 'reporter', 'reporterId',
     'reporterType', 'reporterTypeName', 'category', 'flags',
     'channel', 'resolution', 'title', 'dateOfIncident', 'dateCreated', 'version', 'isHistory',
-    'reporterFirstName', 'reporterLastName', 'reporterDob',
+    'reporterName', 'isBeneficiary', 'gender', 'isBatwa', 'beneficiaryType',
+    'reporterPhone', 'cniNumber', 'colline', 'gpsLocation',
+    'vbgType', 'vbgDetail', 'exclusionType', 'exclusionDetail',
+    'paymentType', 'paymentDetail', 'phoneType', 'phoneDetail',
+    'accountType', 'accountDetail', 'receiverName', 'receiverPhone', 'receiverFunction',
+    'isResolved', 'resolverName', 'resolverFunction', 'resolutionDetails',
+    'otherBeneficiaryType', 'isAnonymous', 'nonBeneficiaryDetails',
+    'isProjectRelated', 'violHospital', 'violComplaint', 'violSupport',
+    'otherChannel', 'formId',
   ];
   const payload = formatPageQueryWithCount(
     'tickets',
@@ -55,7 +63,15 @@ export function fetchTicket(mm, filters) {
     'reporterType', 'reporterTypeName', 'category', 'flags', 'channel',
     'resolution', 'title', 'dateOfIncident', 'dateCreated',
     'attendingStaff {id, username}', 'version', 'isHistory,', 'jsonExt',
-    'reporterFirstName', 'reporterLastName', 'reporterDob',
+    'reporterName', 'isBeneficiary', 'gender', 'isBatwa', 'beneficiaryType',
+    'reporterPhone', 'cniNumber', 'colline', 'gpsLocation',
+    'vbgType', 'vbgDetail', 'exclusionType', 'exclusionDetail',
+    'paymentType', 'paymentDetail', 'phoneType', 'phoneDetail',
+    'accountType', 'accountDetail', 'receiverName', 'receiverPhone', 'receiverFunction',
+    'isResolved', 'resolverName', 'resolverFunction', 'resolutionDetails',
+    'otherBeneficiaryType', 'isAnonymous', 'nonBeneficiaryDetails',
+    'isProjectRelated', 'violHospital', 'violComplaint', 'violSupport',
+    'otherChannel', 'formId',
   ];
   const payload = formatPageQueryWithCount(
     'tickets',
@@ -94,20 +110,28 @@ export function fetchComments(ticket) {
   return { type: 'COMMENT_COMMENTS', payload: { data: [] } };
 }
 
+// Helper function to convert arrays to space-separated strings
+function arrayToSpaceSeparatedString(value) {
+  if (Array.isArray(value)) {
+    return value.join(' ');
+  }
+  return value;
+}
+
 export function formatTicketGQL(ticket) {
   return `
     ${ticket.id !== undefined && ticket.id !== null ? `id: "${ticket.id}"` : ''}
     ${ticket.code ? `code: "${formatGQLString(ticket.code)}"` : ''}
-    ${!!ticket.category && !!ticket.category ? `category: "${ticket.category}"` : ''}
-    ${!!ticket.title && !!ticket.title ? `title: "${ticket.title}"` : ''}
+    ${!!ticket.category ? `category: "${arrayToSpaceSeparatedString(ticket.category)}"` : ''}
+    ${!!ticket.title ? `title: "${ticket.title}"` : ''}
     ${!!ticket.attendingStaff && !!ticket.attendingStaff ? `attendingStaffId: "${decodeId(ticket.attendingStaff.id)}"` : ''}
-    ${!!ticket.description && !!ticket.description ? `description: "${ticket.description}"` : ''}
+    ${!!ticket.description ? `description: "${ticket.description}"` : ''}
     ${ticket.reporter
     ? (isBase64Encoded(ticket.reporter.id)
       ? `reporterId: "${decodeId(ticket.reporter.id)}"`
       : `reporterId: "${ticket.reporter.id}"`)
     : ''}
-    ${!!ticket.reporterType && !!ticket.reporterType ? `reporterType: "${ticket.reporterType}"` : ''}
+    ${!!ticket.reporterType ? `reporterType: "${ticket.reporterType}"` : ''}
     ${ticket.nameOfComplainant ? `nameOfComplainant: "${formatGQLString(ticket.nameOfComplainant)}"` : ''}
     ${ticket.resolution ? `resolution: "${formatGQLString(ticket.resolution)}"` : ''}
     ${ticket.status ? `status: "${formatGQLString(ticket.status)}"` : ''}
@@ -115,8 +139,43 @@ export function formatTicketGQL(ticket) {
     ${ticket.dueDate ? `dueDate: "${formatGQLString(ticket.dueDate)}"` : ''}
     ${ticket.dateSubmitted ? `dateSubmitted: "${formatGQLString(ticket.dateSubmitted)}"` : ''}
     ${ticket.dateOfIncident ? `dateOfIncident: "${formatGQLString(ticket.dateOfIncident)}"` : ''}
-    ${!!ticket.channel && !!ticket.channel ? `channel: "${ticket.channel}"` : ''}
-    ${!!ticket.flags && !!ticket.flags ? `flags: "${ticket.flags}"` : ''}
+    ${!!ticket.channel ? `channel: "${arrayToSpaceSeparatedString(ticket.channel)}"` : ''}
+    ${!!ticket.flags ? `flags: "${arrayToSpaceSeparatedString(ticket.flags)}"` : ''}
+    ${ticket.isBeneficiary !== undefined ? `isBeneficiary: ${ticket.isBeneficiary}` : ''}
+    ${ticket.gender ? `gender: "${formatGQLString(ticket.gender)}"` : ''}
+    ${ticket.isBatwa !== undefined ? `isBatwa: ${ticket.isBatwa}` : ''}
+    ${ticket.beneficiaryType ? `beneficiaryType: "${formatGQLString(ticket.beneficiaryType)}"` : ''}
+    ${ticket.reporterPhone ? `reporterPhone: "${formatGQLString(ticket.reporterPhone)}"` : ''}
+    ${ticket.reporterName ? `reporterName: "${formatGQLString(ticket.reporterName)}"` : ''}
+    ${ticket.cniNumber ? `cniNumber: "${formatGQLString(ticket.cniNumber)}"` : ''}
+    ${ticket.colline ? `colline: "${formatGQLString(ticket.colline)}"` : ''}
+    ${ticket.gpsLocation ? `gpsLocation: "${formatGQLString(ticket.gpsLocation)}"` : ''}
+    ${ticket.vbgType ? `vbgType: "${formatGQLString(ticket.vbgType)}"` : ''}
+    ${ticket.vbgDetail ? `vbgDetail: "${formatGQLString(ticket.vbgDetail)}"` : ''}
+    ${ticket.exclusionType ? `exclusionType: "${formatGQLString(ticket.exclusionType)}"` : ''}
+    ${ticket.exclusionDetail ? `exclusionDetail: "${formatGQLString(ticket.exclusionDetail)}"` : ''}
+    ${ticket.paymentType ? `paymentType: "${formatGQLString(ticket.paymentType)}"` : ''}
+    ${ticket.paymentDetail ? `paymentDetail: "${formatGQLString(ticket.paymentDetail)}"` : ''}
+    ${ticket.phoneType ? `phoneType: "${formatGQLString(ticket.phoneType)}"` : ''}
+    ${ticket.phoneDetail ? `phoneDetail: "${formatGQLString(ticket.phoneDetail)}"` : ''}
+    ${ticket.accountType ? `accountType: "${formatGQLString(ticket.accountType)}"` : ''}
+    ${ticket.accountDetail ? `accountDetail: "${formatGQLString(ticket.accountDetail)}"` : ''}
+    ${ticket.receiverName ? `receiverName: "${formatGQLString(ticket.receiverName)}"` : ''}
+    ${ticket.receiverPhone ? `receiverPhone: "${formatGQLString(ticket.receiverPhone)}"` : ''}
+    ${ticket.receiverFunction ? `receiverFunction: "${formatGQLString(ticket.receiverFunction)}"` : ''}
+    ${ticket.isResolved !== undefined ? `isResolved: ${ticket.isResolved}` : ''}
+    ${ticket.resolverName ? `resolverName: "${formatGQLString(ticket.resolverName)}"` : ''}
+    ${ticket.resolverFunction ? `resolverFunction: "${formatGQLString(ticket.resolverFunction)}"` : ''}
+    ${ticket.resolutionDetails ? `resolutionDetails: "${formatGQLString(ticket.resolutionDetails)}"` : ''}
+    ${ticket.otherBeneficiaryType ? `otherBeneficiaryType: "${formatGQLString(ticket.otherBeneficiaryType)}"` : ''}
+    ${ticket.isAnonymous !== undefined ? `isAnonymous: ${ticket.isAnonymous}` : ''}
+    ${ticket.nonBeneficiaryDetails ? `nonBeneficiaryDetails: "${formatGQLString(ticket.nonBeneficiaryDetails)}"` : ''}
+    ${ticket.isProjectRelated !== undefined ? `isProjectRelated: ${ticket.isProjectRelated}` : ''}
+    ${ticket.violHospital !== undefined ? `violHospital: ${ticket.violHospital}` : ''}
+    ${ticket.violComplaint !== undefined ? `violComplaint: ${ticket.violComplaint}` : ''}
+    ${ticket.violSupport !== undefined ? `violSupport: ${ticket.violSupport}` : ''}
+    ${ticket.otherChannel ? `otherChannel: "${formatGQLString(ticket.otherChannel)}"` : ''}
+    ${ticket.formId ? `formId: "${formatGQLString(ticket.formId)}"` : ''}
   `;
 }
 
@@ -125,9 +184,9 @@ export function formatUpdateTicketGQL(ticket) {
   if (ticket.reporter) ticket.reporter = JSON.parse(JSON.parse(ticket.reporter || '{}'), '{}');
   return `
     ${ticket.id !== undefined && ticket.id !== null ? `id: "${ticket.id}"` : ''}
-    ${!!ticket.category && !!ticket.category ? `category: "${ticket.category}"` : ''}
-    ${!!ticket.title && !!ticket.title ? `title: "${ticket.title}"` : ''}
-    ${!!ticket.description && !!ticket.description ? `description: "${ticket.description}"` : ''}
+    ${!!ticket.category ? `category: "${arrayToSpaceSeparatedString(ticket.category)}"` : ''}
+    ${!!ticket.title ? `title: "${ticket.title}"` : ''}
+    ${!!ticket.description ? `description: "${ticket.description}"` : ''}
     ${!!ticket.attendingStaff && !!ticket.attendingStaff ? `attendingStaffId: "${decodeId(ticket.attendingStaff.id)}"` : ''}
     ${ticket.reporter
     ? (isBase64Encoded(ticket.reporter.id)
@@ -142,8 +201,43 @@ export function formatUpdateTicketGQL(ticket) {
     ${ticket.dueDate ? `dueDate: "${formatGQLString(ticket.dueDate)}"` : ''}
     ${ticket.dateSubmitted ? `dateSubmitted: "${formatGQLString(ticket.dateSubmitted)}"` : ''}
     ${ticket.dateOfIncident ? `dateOfIncident: "${formatGQLString(ticket.dateOfIncident)}"` : ''}
-    ${!!ticket.channel && !!ticket.channel ? `channel: "${ticket.channel}"` : ''}
-    ${!!ticket.flags && !!ticket.flags ? `flags: "${ticket.flags}"` : ''}
+    ${!!ticket.channel ? `channel: "${arrayToSpaceSeparatedString(ticket.channel)}"` : ''}
+    ${!!ticket.flags ? `flags: "${arrayToSpaceSeparatedString(ticket.flags)}"` : ''}
+    ${ticket.isBeneficiary !== undefined ? `isBeneficiary: ${ticket.isBeneficiary}` : ''}
+    ${ticket.gender ? `gender: "${formatGQLString(ticket.gender)}"` : ''}
+    ${ticket.isBatwa !== undefined ? `isBatwa: ${ticket.isBatwa}` : ''}
+    ${ticket.beneficiaryType ? `beneficiaryType: "${formatGQLString(ticket.beneficiaryType)}"` : ''}
+    ${ticket.reporterPhone ? `reporterPhone: "${formatGQLString(ticket.reporterPhone)}"` : ''}
+    ${ticket.reporterName ? `reporterName: "${formatGQLString(ticket.reporterName)}"` : ''}
+    ${ticket.cniNumber ? `cniNumber: "${formatGQLString(ticket.cniNumber)}"` : ''}
+    ${ticket.colline ? `colline: "${formatGQLString(ticket.colline)}"` : ''}
+    ${ticket.gpsLocation ? `gpsLocation: "${formatGQLString(ticket.gpsLocation)}"` : ''}
+    ${ticket.vbgType ? `vbgType: "${formatGQLString(ticket.vbgType)}"` : ''}
+    ${ticket.vbgDetail ? `vbgDetail: "${formatGQLString(ticket.vbgDetail)}"` : ''}
+    ${ticket.exclusionType ? `exclusionType: "${formatGQLString(ticket.exclusionType)}"` : ''}
+    ${ticket.exclusionDetail ? `exclusionDetail: "${formatGQLString(ticket.exclusionDetail)}"` : ''}
+    ${ticket.paymentType ? `paymentType: "${formatGQLString(ticket.paymentType)}"` : ''}
+    ${ticket.paymentDetail ? `paymentDetail: "${formatGQLString(ticket.paymentDetail)}"` : ''}
+    ${ticket.phoneType ? `phoneType: "${formatGQLString(ticket.phoneType)}"` : ''}
+    ${ticket.phoneDetail ? `phoneDetail: "${formatGQLString(ticket.phoneDetail)}"` : ''}
+    ${ticket.accountType ? `accountType: "${formatGQLString(ticket.accountType)}"` : ''}
+    ${ticket.accountDetail ? `accountDetail: "${formatGQLString(ticket.accountDetail)}"` : ''}
+    ${ticket.receiverName ? `receiverName: "${formatGQLString(ticket.receiverName)}"` : ''}
+    ${ticket.receiverPhone ? `receiverPhone: "${formatGQLString(ticket.receiverPhone)}"` : ''}
+    ${ticket.receiverFunction ? `receiverFunction: "${formatGQLString(ticket.receiverFunction)}"` : ''}
+    ${ticket.isResolved !== undefined ? `isResolved: ${ticket.isResolved}` : ''}
+    ${ticket.resolverName ? `resolverName: "${formatGQLString(ticket.resolverName)}"` : ''}
+    ${ticket.resolverFunction ? `resolverFunction: "${formatGQLString(ticket.resolverFunction)}"` : ''}
+    ${ticket.resolutionDetails ? `resolutionDetails: "${formatGQLString(ticket.resolutionDetails)}"` : ''}
+    ${ticket.otherBeneficiaryType ? `otherBeneficiaryType: "${formatGQLString(ticket.otherBeneficiaryType)}"` : ''}
+    ${ticket.isAnonymous !== undefined ? `isAnonymous: ${ticket.isAnonymous}` : ''}
+    ${ticket.nonBeneficiaryDetails ? `nonBeneficiaryDetails: "${formatGQLString(ticket.nonBeneficiaryDetails)}"` : ''}
+    ${ticket.isProjectRelated !== undefined ? `isProjectRelated: ${ticket.isProjectRelated}` : ''}
+    ${ticket.violHospital !== undefined ? `violHospital: ${ticket.violHospital}` : ''}
+    ${ticket.violComplaint !== undefined ? `violComplaint: ${ticket.violComplaint}` : ''}
+    ${ticket.violSupport !== undefined ? `violSupport: ${ticket.violSupport}` : ''}
+    ${ticket.otherChannel ? `otherChannel: "${formatGQLString(ticket.otherChannel)}"` : ''}
+    ${ticket.formId ? `formId: "${formatGQLString(ticket.formId)}"` : ''}
   `;
 }
 

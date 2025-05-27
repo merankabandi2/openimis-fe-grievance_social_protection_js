@@ -9,12 +9,18 @@ import reducer from './reducer';
 import GrievanceMainMenu from './menu/GrievanceMainMenu';
 import TicketsPage from './pages/TicketsPage';
 import TicketPage from './pages/TicketPage';
+import AddTicketPageUpdated from './pages/AddTicketPageUpdated';
+import AddTicketPageImproved from './pages/AddTicketPageImproved';
+import EditTicketPageUpdated from './pages/EditTicketPageUpdated';
 import TicketSearcher from './components/TicketSearcher';
 import TicketPriorityPicker from './pickers/TicketPriorityPicker';
 import TicketStatusPicker from './pickers/TicketStatusPicker';
 import CategoryPicker from './pickers/CategoryPicker';
+import MultiCategoryPicker from './pickers/MultiCategoryPicker';
+import HierarchicalCategoryPicker from './pickers/HierarchicalCategoryPicker';
 import GrievanceConfigurationDialog from './dialogs/GrievanceConfigurationDialog';
 import ChannelPicker from './pickers/ChannelPicker';
+import MultiChannelPicker from './pickers/MultiChannelPicker';
 import FlagPicker from './pickers/FlagsPicker';
 import GrievanceDashboard from './components/GrievanceDashboard';
 import {
@@ -39,20 +45,25 @@ const DEFAULT_CONFIG = {
 
     { key: 'grievanceSocialProtection.route.ticketSearcher', ref: TicketSearcher },
     { key: 'grievanceSocialProtection.GrievanceDashboard', ref: GrievanceDashboard },
+    { key: 'grievanceSocialProtection.AddTicketPageUpdated', ref: AddTicketPageUpdated },
+    { key: 'grievanceSocialProtection.EditTicketPageUpdated', ref: EditTicketPageUpdated },
 
     { key: 'grievanceSocialProtection.TicketStatusPicker', ref: TicketStatusPicker },
     { key: 'grievanceSocialProtection.TicketPriorityPicker', ref: TicketPriorityPicker },
     { key: 'grievanceSocialProtection.DropDownCategoryPicker', ref: CategoryPicker },
     { key: 'grievanceSocialProtection.CategoryPicker', ref: CategoryPicker },
+    { key: 'grievanceSocialProtection.MultiCategoryPicker', ref: MultiCategoryPicker },
+    { key: 'grievanceSocialProtection.HierarchicalCategoryPicker', ref: HierarchicalCategoryPicker },
     { key: 'grievanceSocialProtection.FlagPicker', ref: FlagPicker },
     { key: 'grievanceSocialProtection.ChannelPicker', ref: ChannelPicker },
+    { key: 'grievanceSocialProtection.MultiChannelPicker', ref: MultiChannelPicker },
     { key: 'grievanceSocialProtection.GrievanceConfigurationDialog', ref: GrievanceConfigurationDialog },
 
   ],
   'core.Router': [
     { path: ROUTE_TICKET_TICKETS, component: TicketsPage },
-    { path: `${ROUTE_TICKET_TICKET}/:ticket_uuid?/:version?`, component: TicketPage },
-    { path: `${ROUTE_TICKET_NEW_TICKET}`, component: TicketPage },
+    { path: `${ROUTE_TICKET_TICKET}/:ticket_uuid?/:version?`, component: EditTicketPageUpdated },
+    { path: `${ROUTE_TICKET_NEW_TICKET}`, component: AddTicketPageImproved },
     { path: ROUTE_GRIEVANCE_DASHBOARD, component: GrievanceDashboard },
   ],
   'core.MainMenu': [{ name: 'GrievanceMainMenu', component: GrievanceMainMenu }],

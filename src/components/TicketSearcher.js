@@ -6,7 +6,7 @@ import React, { Component, Fragment } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
-import { IconButton, Tooltip } from '@material-ui/core';
+import { IconButton, Tooltip, Chip } from '@material-ui/core';
 import { withStyles, withTheme } from '@material-ui/core/styles';
 import {
   coreConfirm,
@@ -21,6 +21,24 @@ import {
   decodeId,
 } from '@openimis/fe-core';
 import EditIcon from '@material-ui/icons/Edit';
+import {
+  CheckCircle as CheckCircleIcon,
+  Cancel as CancelIcon,
+  Phone as PhoneIcon,
+  Email as EmailIcon,
+  Person as PersonIcon,
+  Chat as ChatIcon,
+  Sms as SmsIcon,
+  Home as HomeIcon,
+  Mail as MailIcon,
+  WifiTethering as HotlineIcon,
+  Inbox as InboxIcon,
+  PriorityHigh as HighPriorityIcon,
+  Warning as MediumPriorityIcon,
+  Info as LowPriorityIcon,
+  Error as UrgentPriorityIcon,
+  InfoOutlined as InfoIcon,
+} from '@material-ui/icons';
 // import AddIcon from '@material-ui/icons/Add';
 import { MODULE_NAME, RIGHT_TICKET_EDIT } from '../constants';
 import { fetchTicketSummaries, resolveTicket } from '../actions';
@@ -117,9 +135,12 @@ class TicketSearcher extends Component {
     'tickets.code',
     'tickets.title',
     'tickets.beneficary',
+    'tickets.category',
+    'tickets.channel',
     'tickets.priority',
     'tickets.status',
-    'tickets.category',
+    'tickets.isBeneficiary',
+    'tickets.isBatwa',
     this.isShowHistory() ? 'tickets.version' : '',
   ];
 
@@ -127,11 +148,111 @@ class TicketSearcher extends Component {
     ['code', true],
     ['title', true],
     ['reporter_id', true],
+    ['category', true],
+    ['channel', true],
     ['priority', true],
     ['status', true],
-    ['category', true],
+    ['isBeneficiary', false],
+    ['isBatwa', false],
     ['version', true],
   ];
+
+  getChannelIcon = (channel) => {
+    const iconMap = {
+      'telephone': PhoneIcon,
+      'phone': PhoneIcon,
+      'sms': SmsIcon,
+      'email': EmailIcon,
+      'courrier_electronique': EmailIcon,
+      'en_personne': PersonIcon,
+      'walk_in': PersonIcon,
+      'courrier_simple': MailIcon,
+      'letter': MailIcon,
+      'ligne_verte': HotlineIcon,
+      'hotline': HotlineIcon,
+      'boite_suggestion': InboxIcon,
+      'suggestion_box': InboxIcon,
+      'web': ChatIcon,
+      'social_media': ChatIcon,
+    };
+    return iconMap[channel?.toLowerCase()] || ChatIcon;
+  };
+
+  getPriorityIcon = (priority) => {
+    const iconMap = {
+      'URGENT': UrgentPriorityIcon,
+      'HIGH': HighPriorityIcon,
+      'MEDIUM': MediumPriorityIcon,
+      'LOW': LowPriorityIcon,
+    };
+    return iconMap[priority] || InfoIcon;
+  };
+
+  getPriorityColor = (priority) => {
+    const colorMap = {
+      'URGENT': 'error',
+      'HIGH': 'error',
+      'MEDIUM': 'default',
+      'LOW': 'primary',
+    };
+    return colorMap[priority] || 'default';
+  };
+
+  getStatusColor = (status) => {
+    const colorMap = {
+      'OPEN': 'primary',
+      'IN_PROGRESS': 'default',
+      'RESOLVED': 'primary',
+      'CLOSED': 'default',
+      'ESCALATED': 'secondary',
+    };
+    return colorMap[status] || 'default';
+  };
+
+  formatCategoryValue = (category) => {
+    const { intl } = this.props;
+    
+    // Handle array of categories
+    if (Array.isArray(category)) {
+      return category.map(cat => {
+        const key = `ticket.category.${cat}`;
+        const translated = formatMessage(intl, MODULE_NAME, key);
+        return translated === key ? cat : translated;
+      }).join(', ');
+    }
+    
+    // Handle space-separated string
+    if (typeof category === 'string' && category.includes(' ')) {
+      return category.split(' ').map(cat => {
+        const key = `ticket.category.${cat}`;
+        const translated = formatMessage(intl, MODULE_NAME, key);
+        return translated === key ? cat : translated;
+      }).join(', ');
+    }
+    
+    // Handle single category
+    const key = `ticket.category.${category}`;
+    const translated = formatMessage(intl, MODULE_NAME, key);
+    return translated === key ? category : translated;
+  };
+
+  formatChannelValue = (channel) => {
+    const { intl } = this.props;
+    
+    // Handle array of channels
+    if (Array.isArray(channel)) {
+      return channel.map(ch => {
+        const key = `ticket.channel.${ch}`;
+        const translated = formatMessage(intl, MODULE_NAME, key);
+        return translated === key ? ch : translated;
+      }).join(', ');
+    }
+    
+    // Handle single channel
+    const key = `ticket.channel.${channel}`;
+    const translated = formatMessage(intl, MODULE_NAME, key);
+    return translated === key ? channel : translated;
+  };
 
   itemFormatters = () => {
     const formatters = [
@@ -197,9 +318,80 @@ class TicketSearcher extends Component {
         }
         return picker;
       },
-      (ticket) => ticket.priority,
-      (ticket) => ticket.status,
-      (ticket) => ticket.category,
+      (ticket) => {
+        let categoryValue = ticket.category;
+        // Handle JSON stringified arrays
+        if (typeof categoryValue === 'string' && categoryValue.startsWith('[')) {
+          try {
+            categoryValue = JSON.parse(categoryValue);
+          } catch (e) {
+            // If parsing fails, use as is
+          }
+        }
+        return this.formatCategoryValue(categoryValue);
+      },
+      (ticket) => {
+        let channelValue = ticket.channel;
+        // Handle JSON stringified arrays
+        if (typeof channelValue === 'string' && channelValue.startsWith('[')) {
+          try {
+            channelValue = JSON.parse(channelValue);
+          } catch (e) {
+            // If parsing fails, use as is
+          }
+        }
+        
+        const channels = Array.isArray(channelValue) ? channelValue : [channelValue];
+        const Icon = this.getChannelIcon(channels[0]);
+        const label = this.formatChannelValue(channelValue);
+        
+        return (
+          <Tooltip title={label}>
+            <Icon color="action" fontSize="small" />
+          </Tooltip>
+        );
+      },
+      (ticket) => {
+        const Icon = this.getPriorityIcon(ticket.priority);
+        const color = this.getPriorityColor(ticket.priority);
+        const label = formatMessage(this.props.intl, MODULE_NAME, `ticket.priority.${ticket.priority}`);
+        
+        return (
+          <Tooltip title={label}>
+            <Icon color={color} fontSize="small" />
+          </Tooltip>
+        );
+      },
+      (ticket) => {
+        const label = formatMessage(this.props.intl, MODULE_NAME, `ticket.status.${ticket.status}`);
+        const color = this.getStatusColor(ticket.status);
+        
+        return (
+          <Chip 
+            label={label}
+            color={color}
+            size="small"
+          />
+        );
+      },
+      (ticket) => ticket.isBeneficiary ? (
+        <Tooltip title={formatMessage(this.props.intl, MODULE_NAME, 'yes')}>
+          <CheckCircleIcon color="primary" fontSize="small" />
+        </Tooltip>
+      ) : (
+        <Tooltip title={formatMessage(this.props.intl, MODULE_NAME, 'no')}>
+          <CancelIcon color="disabled" fontSize="small" />
+        </Tooltip>
+      ),
+      (ticket) => ticket.isBatwa ? (
+        <Tooltip title={formatMessage(this.props.intl, MODULE_NAME, 'yes')}>
+          <CheckCircleIcon color="primary" fontSize="small" />
+        </Tooltip>
+      ) : (
+        <Tooltip title={formatMessage(this.props.intl, MODULE_NAME, 'no')}>
+          <CancelIcon color="disabled" fontSize="small" />
+        </Tooltip>
+      ),
       (ticket) => (this.isShowHistory() ? ticket?.version : null),
     ];
 
