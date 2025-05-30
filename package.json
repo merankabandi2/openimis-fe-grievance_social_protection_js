@@ -44,8 +44,9 @@
     "dist"
   ],
   "dependencies": {
-    "react-to-print": "^2.15.1",
     "apexcharts": "^3.41.0",
-    "react-apexcharts": "1.4.1"
+    "react-apexcharts": "1.4.1",
+    "react-to-print": "^2.15.1",
+    "recharts": "^2.15.3"
   }
 }

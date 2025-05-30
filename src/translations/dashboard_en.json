@@ -1,0 +1,45 @@
+{
+  "grievanceSocialProtection.dashboard.title": "Grievance Dashboard",
+  "grievanceSocialProtection.dashboard.refresh": "Refresh Dashboard",
+  "grievanceSocialProtection.dashboard.totalTickets": "Total Tickets",
+  "grievanceSocialProtection.dashboard.openTickets": "Open Tickets",
+  "grievanceSocialProtection.dashboard.resolvedTickets": "Resolved Tickets",
+  "grievanceSocialProtection.dashboard.anonymousTickets": "Anonymous Reports",
+  "grievanceSocialProtection.dashboard.sensitiveAlert": "{count} sensitive cases require immediate attention",
+  
+  "grievanceSocialProtection.filter.title": "Filter Grievances",
+  "grievanceSocialProtection.filter.status": "Status",
+  "grievanceSocialProtection.filter.category": "Category",
+  "grievanceSocialProtection.filter.priority": "Priority",
+  "grievanceSocialProtection.filter.dateRange": "Date Range",
+  "grievanceSocialProtection.filter.flags": "Special Flags",
+  "grievanceSocialProtection.filter.sensitiveCases": "Sensitive Cases Only",
+  "grievanceSocialProtection.filter.anonymousOnly": "Anonymous Reports Only",
+  "grievanceSocialProtection.filter.assignedToMe": "Assigned to Me",
+  "grievanceSocialProtection.filter.startDate": "Start Date",
+  "grievanceSocialProtection.filter.endDate": "End Date",
+  "grievanceSocialProtection.filter.clear": "Clear Filters",
+  "grievanceSocialProtection.filter.clearAll": "Clear All",
+  "grievanceSocialProtection.filter.apply": "Apply Filters",
+  
+  "grievanceSocialProtection.dashboard.statusDistribution": "Status Distribution",
+  "grievanceSocialProtection.dashboard.priorityDistribution": "Priority Distribution",
+  "grievanceSocialProtection.dashboard.resolutionTrend": "Resolution Trend",
+  "grievanceSocialProtection.dashboard.categoryBreakdown": "Category Breakdown",
+  "grievanceSocialProtection.dashboard.channelDistribution": "Channel Distribution",
+  
+  "grievanceSocialProtection.dashboard.received": "Received",
+  "grievanceSocialProtection.dashboard.resolved": "Resolved",
+  "grievanceSocialProtection.dashboard.pending": "Pending",
+  
+  "grievanceSocialProtection.dashboard.averageResolutionTime": "Avg. Resolution Time",
+  "grievanceSocialProtection.dashboard.resolutionRate": "Resolution Rate",
+  "grievanceSocialProtection.dashboard.escalationRate": "Escalation Rate",
+  
+  "grievanceSocialProtection.ticket.sensitive": "Sensitive Case",
+  "grievanceSocialProtection.ticket.anonymous": "Anonymous",
+  
+  "grievanceSocialProtection.performance.cached": "Cached Data",
+  "grievanceSocialProtection.performance.loadTime": "Load Time",
+  "grievanceSocialProtection.performance.lastUpdated": "Last Updated"
+}
