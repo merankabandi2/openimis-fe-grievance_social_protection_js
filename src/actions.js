@@ -16,6 +16,10 @@ const GRIEVANCE_CONFIGURATION_PROJECTION = () => [
   'grievanceFlags',
   'grievanceChannels',
   'grievanceDefaultResolutionsByCategory{category, resolutionTime}',
+  'grievanceCategoriesHierarchical{name, fullName, priority, permissions, defaultFlags, children{name, fullName, priority, permissions, defaultFlags, children{name, fullName, priority, permissions, defaultFlags}}}',
+  'grievanceFlagsDetailed{name, priority, permissions}',
+  'accessibleCategories',
+  'accessibleFlags',
 ];
 
 const CATEGORY_FULL_PROJECTION = () => [

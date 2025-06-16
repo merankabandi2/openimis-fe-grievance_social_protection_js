@@ -22,7 +22,7 @@ import { injectIntl } from 'react-intl';
 import { createTicket } from '../actions';
 import { EMPTY_STRING, MODULE_NAME } from '../constants';
 import GrievantTypePicker from '../pickers/GrievantTypePicker';
-import HierarchicalCategoryPicker from '../pickers/HierarchicalCategoryPicker';
+import CascadingCategoryPicker from '../pickers/CascadingCategoryPicker';
 
 const styles = (theme) => ({
   paper: {
@@ -493,12 +493,13 @@ class AddTicketPageImproved extends Component {
                 <Typography variant="subtitle2" gutterBottom>
                   <FormattedMessage module={MODULE_NAME} id="ticket.category" /> *
                 </Typography>
-                <HierarchicalCategoryPicker
-                  value={stateEdited.category}
-                  onChange={(v) => this.updateAttribute('category', v)}
+                <CascadingCategoryPicker
+                  value={stateEdited.category ? [stateEdited.category] : []}
+                  onChange={(v) => this.updateAttribute('category', v.length > 0 ? v[0] : '')}
                   readOnly={isSaved}
                   required
-                  error={!!validationErrors.category}
+                  allowMultiple={false}
+                  showSelectedPath={true}
                 />
               </Grid>
 

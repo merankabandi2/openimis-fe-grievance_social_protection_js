@@ -372,6 +372,39 @@ function GrievanceDashboardOptimized() {
   // Calculate performance metrics
   const performanceTime = loadTime ? `${(new Date().getTime() - loadTime) / 1000}s` : null;
 
+  // Helper function to get sensitive cases count
+  const getSensitiveCasesCount = () => {
+    // Debug: Log the data structures to understand what we're getting
+    console.log('Debug - Summary:', summary);
+    console.log('Debug - Category Distribution:', categoryDistribution);
+    console.log('Debug - Recent Tickets Sample:', recentTickets?.slice(0, 5));
+    
+    // Use summary.sensitiveTickets as primary source since it's calculated by the backend
+    if (summary.sensitiveTickets && summary.sensitiveTickets > 0) {
+      return summary.sensitiveTickets;
+    }
+    
+    // Try to find from category distribution as fallback
+    const fromCategory = categoryDistribution.find(c => c.category === 'cas_sensibles')?.count || 0;
+    
+    // If still 0, count from recent tickets if available
+    if (fromCategory === 0 && recentTickets && recentTickets.length > 0) {
+      const countFromTickets = recentTickets.filter(ticket => 
+        ticket.flags?.includes('SENSITIVE') || 
+        ticket.category === 'cas_sensibles'
+      ).length;
+      
+      // This is just a sample, so return an estimate
+      if (countFromTickets > 0 && summary.totalTickets > 0) {
+        // Estimate based on sample ratio
+        const ratio = countFromTickets / Math.min(recentTickets.length, 10);
+        return Math.ceil(ratio * summary.totalTickets);
+      }
+    }
+    
+    return fromCategory;
+  };
+
   const handleFilterChange = (newFilters) => {
     setFilters(newFilters);
     setLoadTime(new Date().getTime());
@@ -502,11 +535,11 @@ function GrievanceDashboardOptimized() {
           </div>
 
           {/* Alert for sensitive cases */}
-          {summary.sensitiveTickets > 0 && (
+          {getSensitiveCasesCount() > 0 && (
             <Box className={classes.sensitiveAlert}>
               <WarningIcon color="error" />
               <Typography variant="body2">
-                <strong>{summary.sensitiveTickets} cas sensibles</strong> nécessitent une attention immédiate
+                <strong>{getSensitiveCasesCount()} cas sensibles</strong> nécessitent une attention immédiate
               </Typography>
             </Box>
           )}
@@ -571,7 +604,7 @@ function GrievanceDashboardOptimized() {
             <Grid item xs={12} md={4}>
               <StatsCard
                 title="Cas Sensibles"
-                value={summary.sensitiveTickets}
+                value={getSensitiveCasesCount()}
                 icon={WarningIcon}
                 color="#ff5c75"
                 subtitle="Violence, corruption, discrimination"
@@ -579,35 +612,7 @@ function GrievanceDashboardOptimized() {
                 classes={classes}
               />
             </Grid>
-
             <Grid item xs={12} md={4}>
-              <StatsCard
-                title="En Cours"
-                value={summary.inProgressTickets}
-                icon={HourglassEmptyIcon}
-                color="#ffb800"
-                subtitle="Plaintes en traitement"
-                loading={isLoading}
-                classes={classes}
-              />
-            </Grid>
-
-            <Grid item xs={12} md={4}>
-              <StatsCard
-                title="Résolus"
-                value={summary.resolvedTickets}
-                icon={CheckCircleIcon}
-                color="#00d0bd"
-                subtitle="Plaintes résolues"
-                loading={isLoading}
-                classes={classes}
-              />
-            </Grid>
-          </Grid>
-
-          {/* Additional Stats Row */}
-          <Grid container spacing={3} style={{ marginTop: 8 }}>
-            <Grid item xs={12} md={3}>
               <StatsCard
                 title="Cas Spéciaux"
                 value={categoryDistribution.find(c => c.category === 'cas_speciaux')?.count || 0}
@@ -619,7 +624,7 @@ function GrievanceDashboardOptimized() {
               />
             </Grid>
 
-            <Grid item xs={12} md={3}>
+            <Grid item xs={12} md={4}>
               <StatsCard
                 title="Cas Non-Sensibles"
                 value={categoryDistribution.find(c => c.category === 'cas_non_sensibles')?.count || 0}
@@ -631,29 +636,6 @@ function GrievanceDashboardOptimized() {
               />
             </Grid>
 
-            <Grid item xs={12} md={3}>
-              <StatsCard
-                title="Anonymes"
-                value={summary.anonymousTickets}
-                icon={PersonIcon}
-                color="#6c757d"
-                subtitle="Plaintes anonymes"
-                loading={isLoading}
-                classes={classes}
-              />
-            </Grid>
-
-            <Grid item xs={12} md={3}>
-              <StatsCard
-                title="Fermés"
-                value={summary.closedTickets}
-                icon={CancelIcon}
-                color="#6c757d"
-                subtitle="Plaintes fermées"
-                loading={isLoading}
-                classes={classes}
-              />
-            </Grid>
           </Grid>
 
           {/* Charts */}
@@ -675,32 +657,6 @@ function GrievanceDashboardOptimized() {
                       }}
                       series={chartData.statusChart.series}
                       type="donut"
-                      height="100%"
-                    />
-                  </div>
-                </Paper>
-              </Grid>
-
-              <Grid item xs={12} md={6}>
-                <Paper style={{ padding: 24 }}>
-                  <Typography variant="h6" gutterBottom>
-                    Plaintes par Catégorie
-                  </Typography>
-                  <div className={classes.chartContainer}>
-                    <ReactApexChart
-                      options={{
-                        chart: { type: 'bar' },
-                        xaxis: { categories: chartData.categoryChart.categories },
-                        colors: ['#ff5c75'],
-                        plotOptions: {
-                          bar: {
-                            borderRadius: 4,
-                            horizontal: true,
-                          }
-                        },
-                      }}
-                      series={chartData.categoryChart.series}
-                      type="bar"
                       height="100%"
                     />
                   </div>
@@ -729,6 +685,32 @@ function GrievanceDashboardOptimized() {
                   </Paper>
                 </Grid>
               )}
+
+              <Grid item xs={12} md={6}>
+                <Paper style={{ padding: 24 }}>
+                  <Typography variant="h6" gutterBottom>
+                    Plaintes par Catégorie
+                  </Typography>
+                  <div className={classes.chartContainer}>
+                    <ReactApexChart
+                      options={{
+                        chart: { type: 'bar' },
+                        xaxis: { categories: chartData.categoryChart.categories },
+                        colors: ['#ff5c75'],
+                        plotOptions: {
+                          bar: {
+                            borderRadius: 4,
+                            horizontal: true,
+                          }
+                        },
+                      }}
+                      series={chartData.categoryChart.series}
+                      type="bar"
+                      height="100%"
+                    />
+                  </div>
+                </Paper>
+              </Grid>
 
               {priorityDistribution.length > 0 && (
                 <Grid item xs={12} md={6}>

@@ -66,7 +66,7 @@ import {
 import { updateTicket, fetchTicket, createTicketComment } from '../actions';
 import { EMPTY_STRING, MODULE_NAME } from '../constants';
 import TicketPrintTemplate from '../components/TicketPrintTemplate';
-import MultiCategoryPicker from '../pickers/MultiCategoryPicker';
+import CascadingCategoryPicker from '../pickers/CascadingCategoryPicker';
 import MultiChannelPicker from '../pickers/MultiChannelPicker';
 
 const styles = (theme) => ({
@@ -675,12 +675,14 @@ class EditTicketPageUpdated extends Component {
                     readOnly={propsReadOnly}
                   />
                 </Grid>
-                <Grid item xs={6} className={classes.item}>
-                  <MultiCategoryPicker
-                    value={stateEdited.category}
-                    onChange={(v) => this.updateAttribute('category', v)}
+                <Grid item xs={12} className={classes.item}>
+                  <CascadingCategoryPicker
+                    value={stateEdited.category ? [stateEdited.category] : []}
+                    onChange={(v) => this.updateAttribute('category', v.length > 0 ? v[0] : '')}
                     required
                     readOnly={propsReadOnly}
+                    allowMultiple={false}
+                    showSelectedPath={true}
                   />
                 </Grid>
                 <Grid item xs={6} className={classes.item}>

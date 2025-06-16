@@ -56,7 +56,7 @@ import {
 import { Autocomplete } from '@material-ui/lab';
 import { PublishedComponent, formatMessage } from '@openimis/fe-core';
 import { useIntl, FormattedMessage } from 'react-intl';
-import MultiCategoryPicker from '../../pickers/MultiCategoryPicker';
+import CascadingCategoryPicker from '../../pickers/CascadingCategoryPicker';
 import MultiChannelPicker from '../../pickers/MultiChannelPicker';
 
 const useStyles = makeStyles((theme) => ({
@@ -346,7 +346,7 @@ const ModernGrievanceFilters = ({
       chips.push(
         <Chip
           key={`status-${status}`}
-          label={formatMessage(intl, module, `ticket.status.${status}`)}
+          label={formatMessage(intl, module, `grievance.status.${status}`)}
           icon={<Assignment />}
           onDelete={() => handleRemoveFilter('status', status)}
           className={classes.chip}
@@ -363,7 +363,7 @@ const ModernGrievanceFilters = ({
       chips.push(
         <Chip
           key={`category-${category}`}
-          label={formatMessage(intl, module, `ticket.category.${category}`)}
+          label={formatMessage(intl, module, `grievance.category.${category}`)}
           icon={<Category />}
           onDelete={() => handleRemoveFilter('categories', category)}
           className={classes.chip}
@@ -380,7 +380,7 @@ const ModernGrievanceFilters = ({
       chips.push(
         <Chip
           key={`channel-${channel}`}
-          label={formatMessage(intl, module, `ticket.channel.${channel}`)}
+          label={formatMessage(intl, module, `grievance.channel.${channel}`)}
           icon={<ContactPhone />}
           onDelete={() => handleRemoveFilter('channels', channel)}
           className={classes.chip}
@@ -398,7 +398,7 @@ const ModernGrievanceFilters = ({
       chips.push(
         <Chip
           key={`priority-${priority}`}
-          label={`${priorityOption?.icon} ${priorityOption?.label}`}
+          label={`${priorityOption?.icon} ${formatMessage(intl, module, `grievance.priority.${priority}`)}`}
           onDelete={() => handleRemoveFilter('priority', priority)}
           className={classes.chip}
           style={{ borderColor: priorityOption?.color }}
@@ -553,7 +553,7 @@ const ModernGrievanceFilters = ({
                       <Box className={classes.statusOption}>
                         <Chip
                           size="small"
-                          label={formatMessage(intl, module, `ticket.status.${status.value}`)}
+                          label={formatMessage(intl, module, `grievance.status.${status.value}`)}
                           color={status.color}
                         />
                       </Box>
@@ -585,11 +585,11 @@ const ModernGrievanceFilters = ({
               )}
             </AccordionSummary>
             <AccordionDetails className={classes.accordionDetails}>
-              <MultiCategoryPicker
+              <CascadingCategoryPicker
                 value={Array.isArray(filters.categories) ? filters.categories : []}
-                onChange={(value) => handleFilterChange('categories', value)}
-                multiple
-                fullWidth
+                onChange={(value) => handleFilterChange('categories', Array.isArray(value) ? value : [])}
+                allowMultiple={true}
+                maxSelections={10}
               />
             </AccordionDetails>
           </Accordion>
@@ -667,7 +667,7 @@ const ModernGrievanceFilters = ({
                       }}
                     >
                       <Typography variant="h6">{priority.icon}</Typography>
-                      <Typography>{priority.label}</Typography>
+                      <Typography>{formatMessage(intl, module, `grievance.priority.${priority.value}`)}</Typography>
                     </Box>
                   </Grid>
                 ))}

@@ -17,7 +17,9 @@ import TicketPriorityPicker from './pickers/TicketPriorityPicker';
 import TicketStatusPicker from './pickers/TicketStatusPicker';
 import CategoryPicker from './pickers/CategoryPicker';
 import MultiCategoryPicker from './pickers/MultiCategoryPicker';
+import CascadingCategoryPicker from './pickers/CascadingCategoryPicker';
 import HierarchicalCategoryPicker from './pickers/HierarchicalCategoryPicker';
+import DynamicHierarchicalCategoryPicker from './pickers/DynamicHierarchicalCategoryPicker';
 import GrievanceConfigurationDialog from './dialogs/GrievanceConfigurationDialog';
 import ChannelPicker from './pickers/ChannelPicker';
 import MultiChannelPicker from './pickers/MultiChannelPicker';
@@ -32,9 +34,9 @@ import {
   RIGHT_TICKET_SEARCH,
 } from './constants';
 
-const ROUTE_TICKET_TICKETS = 'ticket/tickets';
-const ROUTE_TICKET_TICKET = 'ticket/ticket';
-const ROUTE_TICKET_NEW_TICKET = 'ticket/newTicket';
+const ROUTE_TICKET_TICKETS = 'grievance/tickets';
+const ROUTE_TICKET_TICKET = 'grievance/ticket';
+const ROUTE_TICKET_NEW_TICKET = 'grievance/newTicket';
 const ROUTE_GRIEVANCE_DASHBOARD = 'grievance/dashboard';
 const ROUTE_GRIEVANCE_DASHBOARD_OPTIMIZED = 'grievance/dashboard-optimized';
 
@@ -60,7 +62,9 @@ const DEFAULT_CONFIG = {
     { key: 'grievanceSocialProtection.DropDownCategoryPicker', ref: CategoryPicker },
     { key: 'grievanceSocialProtection.CategoryPicker', ref: CategoryPicker },
     { key: 'grievanceSocialProtection.MultiCategoryPicker', ref: MultiCategoryPicker },
+    { key: 'grievanceSocialProtection.CascadingCategoryPicker', ref: CascadingCategoryPicker },
     { key: 'grievanceSocialProtection.HierarchicalCategoryPicker', ref: HierarchicalCategoryPicker },
+    { key: 'grievanceSocialProtection.DynamicHierarchicalCategoryPicker', ref: DynamicHierarchicalCategoryPicker },
     { key: 'grievanceSocialProtection.FlagPicker', ref: FlagPicker },
     { key: 'grievanceSocialProtection.ChannelPicker', ref: ChannelPicker },
     { key: 'grievanceSocialProtection.MultiChannelPicker', ref: MultiChannelPicker },

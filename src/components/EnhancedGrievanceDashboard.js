@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, {
+  useState, useEffect, useMemo, useCallback,
+} from 'react';
 import {
   Box,
   Container,
@@ -31,8 +33,6 @@ import {
 } from '@material-ui/icons';
 import { useGraphqlQuery, useModulesManager, formatMessage } from '@openimis/fe-core';
 import { useIntl, FormattedMessage } from 'react-intl';
-import ModernGrievanceFilters from './filters/ModernGrievanceFilters';
-import { useDashboardCache } from '../hooks/useDashboardCache';
 import {
   BarChart,
   Bar,
@@ -49,6 +49,8 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import debounce from 'lodash/debounce';
+import ModernGrievanceFilters from './filters/ModernGrievanceFilters';
+import { useDashboardCache } from '../hooks/useDashboardCache';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -205,9 +207,11 @@ const GRIEVANCE_DASHBOARD_QUERY = `
   }
 `;
 
-const StatCard = ({ icon: Icon, value, label, change, color, loading }) => {
+function StatCard({
+  icon: Icon, value, label, change, color, loading,
+}) {
   const classes = useStyles({ color });
-  
+
   if (loading) {
     return (
       <Card className={classes.statCard}>
@@ -218,7 +222,7 @@ const StatCard = ({ icon: Icon, value, label, change, color, loading }) => {
       </Card>
     );
   }
-  
+
   return (
     <Card className={classes.statCard}>
       <CardContent>
@@ -231,27 +235,29 @@ const StatCard = ({ icon: Icon, value, label, change, color, loading }) => {
         </Typography>
         {change !== undefined && (
           <Box className={classes.statChange}>
-            <TrendingUp style={{ 
+            <TrendingUp style={{
               color: change >= 0 ? '#4caf50' : '#f44336',
-              transform: change < 0 ? 'rotate(180deg)' : 'none'
-            }} />
+              transform: change < 0 ? 'rotate(180deg)' : 'none',
+            }}
+            />
             <Typography style={{ color: change >= 0 ? '#4caf50' : '#f44336' }}>
-              {Math.abs(change)}% from last month
+              {Math.abs(change)}
+              % from last month
             </Typography>
           </Box>
         )}
       </CardContent>
     </Card>
   );
-};
+}
 
-const EnhancedGrievanceDashboard = () => {
+function EnhancedGrievanceDashboard() {
   const classes = useStyles();
   const theme = useTheme();
   const intl = useIntl();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const modulesManager = useModulesManager();
-  
+
   const [filters, setFilters] = useState({
     status: [],
     categories: [],
@@ -264,7 +270,7 @@ const EnhancedGrievanceDashboard = () => {
   // Build GraphQL filter string
   const filterString = useMemo(() => {
     const filterParts = [];
-    
+
     if (Array.isArray(filters.status) && filters.status.length > 0) {
       filterParts.push(`status_In: ${JSON.stringify(filters.status)}`);
     }
@@ -283,7 +289,7 @@ const EnhancedGrievanceDashboard = () => {
     if (filters.dateRange?.end) {
       filterParts.push(`dateCreated_Lte: "${filters.dateRange.end.toISOString()}"`);
     }
-    
+
     return filterParts.join(', ');
   }, [filters]);
 
@@ -293,7 +299,7 @@ const EnhancedGrievanceDashboard = () => {
     loading,
     error,
     isStale,
-    refresh
+    refresh,
   } = useDashboardCache(
     async () => {
       const startTime = Date.now();
@@ -302,12 +308,12 @@ const EnhancedGrievanceDashboard = () => {
         variables: { filters: filterString },
         fetchPolicy: 'network-only',
       });
-      
+
       setLoadTime(Date.now() - startTime);
       return data?.ticketDashboard;
     },
     `grievance-dashboard-${filterString}`,
-    [filterString]
+    [filterString],
   );
 
   // Debounced filter handler
@@ -315,7 +321,7 @@ const EnhancedGrievanceDashboard = () => {
     debounce((newFilters) => {
       setFilters(newFilters);
     }, 500),
-    []
+    [],
   );
 
   // Chart colors
@@ -330,20 +336,29 @@ const EnhancedGrievanceDashboard = () => {
   // Render loading skeleton
   const renderSkeleton = () => (
     <Grid container spacing={3}>
-      {[1, 2, 3, 4].map(i => (
+      {[1, 2, 3, 4].map((i) => (
         <Grid item xs={12} sm={6} md={3} key={i}>
-          <Paper style={{ height: 140, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Paper style={{
+            height: 140, display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}
+          >
             <CircularProgress />
           </Paper>
         </Grid>
       ))}
       <Grid item xs={12} md={8}>
-        <Paper style={{ height: 400, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Paper style={{
+          height: 400, display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}
+        >
           <CircularProgress />
         </Paper>
       </Grid>
       <Grid item xs={12} md={4}>
-        <Paper style={{ height: 400, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Paper style={{
+          height: 400, display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}
+        >
           <CircularProgress />
         </Paper>
       </Grid>
@@ -399,7 +414,7 @@ const EnhancedGrievanceDashboard = () => {
             <Box className={classes.sensitiveAlert}>
               <Warning />
               <Typography>
-                <FormattedMessage 
+                <FormattedMessage
                   id="grievanceSocialProtection.dashboard.sensitiveAlert"
                   values={{ count: summary.sensitiveCount }}
                 />
@@ -421,7 +436,7 @@ const EnhancedGrievanceDashboard = () => {
               />
             </Grid>
           </Grow>
-          
+
           <Grow in timeout={900}>
             <Grid item xs={12} sm={6} md={3}>
               <StatCard
@@ -433,7 +448,7 @@ const EnhancedGrievanceDashboard = () => {
               />
             </Grid>
           </Grow>
-          
+
           <Grow in timeout={1000}>
             <Grid item xs={12} sm={6} md={3}>
               <StatCard
@@ -445,7 +460,7 @@ const EnhancedGrievanceDashboard = () => {
               />
             </Grid>
           </Grow>
-          
+
           <Grow in timeout={1100}>
             <Grid item xs={12} sm={6} md={3}>
               <StatCard
@@ -471,8 +486,8 @@ const EnhancedGrievanceDashboard = () => {
                 <ResponsiveContainer width="100%" height={350}>
                   <BarChart data={dashboardData?.byStatus || []}>
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis 
-                      dataKey="status" 
+                    <XAxis
+                      dataKey="status"
                       tick={{ fontSize: 12 }}
                       tickFormatter={(value) => formatMessage(intl, 'grievanceSocialProtection', `ticket.status.${value}`)}
                     />
@@ -509,13 +524,13 @@ const EnhancedGrievanceDashboard = () => {
                       dataKey="count"
                     >
                       {(dashboardData?.byPriority || []).map((entry, index) => (
-                        <Cell 
-                          key={`cell-${index}`} 
+                        <Cell
+                          key={`cell-${index}`}
                           fill={
-                            entry.priority === 'URGENT' ? '#f44336' :
-                            entry.priority === 'HIGH' ? '#ff9800' :
-                            entry.priority === 'MEDIUM' ? '#2196f3' :
-                            '#4caf50'
+                            entry.priority === 'URGENT' ? '#f44336'
+                              : entry.priority === 'HIGH' ? '#ff9800'
+                                : entry.priority === 'MEDIUM' ? '#2196f3'
+                                  : '#4caf50'
                           }
                         />
                       ))}
@@ -541,21 +556,21 @@ const EnhancedGrievanceDashboard = () => {
                     <YAxis />
                     <ChartTooltip />
                     <Legend />
-                    <Line 
-                      type="monotone" 
-                      dataKey="received" 
+                    <Line
+                      type="monotone"
+                      dataKey="received"
                       stroke={theme.palette.primary.main}
                       name={formatMessage(intl, 'grievanceSocialProtection', 'dashboard.received')}
                     />
-                    <Line 
-                      type="monotone" 
-                      dataKey="resolved" 
+                    <Line
+                      type="monotone"
+                      dataKey="resolved"
                       stroke={theme.palette.success.main}
                       name={formatMessage(intl, 'grievanceSocialProtection', 'dashboard.resolved')}
                     />
-                    <Line 
-                      type="monotone" 
-                      dataKey="pending" 
+                    <Line
+                      type="monotone"
+                      dataKey="pending"
                       stroke={theme.palette.warning.main}
                       name={formatMessage(intl, 'grievanceSocialProtection', 'dashboard.pending')}
                     />
@@ -574,6 +589,6 @@ const EnhancedGrievanceDashboard = () => {
       </Container>
     </div>
   );
-};
+}
 
 export default EnhancedGrievanceDashboard;

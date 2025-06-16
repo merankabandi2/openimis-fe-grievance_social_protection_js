@@ -46,9 +46,8 @@ function MultiCategoryPicker(props) {
   };
 
   const handleChange = (newValue) => {
-    // Convert array to space-separated string
-    const stringValue = Array.isArray(newValue) ? newValue.join(' ') : newValue;
-    onChange(stringValue, stringValue);
+    // Pass the array directly to the parent component
+    onChange(Array.isArray(newValue) ? newValue : []);
   };
 
   return (
@@ -66,6 +65,25 @@ function MultiCategoryPicker(props) {
       value={parseValue(value)}
       getOptionLabel={(option) => {
         try {
+          // For hierarchical categories with pipe separators, try to translate the full path first
+          if (typeof option === 'string' && option.includes('|')) {
+            // First try to translate the full hierarchical path
+            const fullPathTranslated = formatMessage(`grievance.category.${option}`);
+            if (fullPathTranslated !== `grievance.category.${option}`) {
+              return fullPathTranslated;
+            }
+            
+            // If full path translation not found, build it from parts
+            const parts = option.split('|').map(part => part.trim());
+            const translatedParts = parts.map(part => {
+              const translated = formatMessage(`grievance.category.${part}`);
+              return translated !== `grievance.category.${part}` ? translated : part;
+            });
+            
+            return translatedParts.join(' | ');
+          }
+          
+          // For simple categories, translate directly
           const translated = formatMessage(`grievance.category.${option}`);
           return translated !== `grievance.category.${option}` ? translated : option;
         } catch (e) {
