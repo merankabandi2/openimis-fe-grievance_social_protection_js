@@ -137,5 +137,6 @@
     "ticket.template.attendingStaff": "Attending Staff",
     "ticket.template.description": "Description",
     "ticket.template.comments": "Comments",
-    "ticket.template.noComments": "No Comments yet"
+    "ticket.template.noComments": "No Comments yet",
+    "grievanceSocialProtection.comment.systemCommenter": "System"
 }

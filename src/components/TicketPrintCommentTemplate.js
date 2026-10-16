@@ -11,6 +11,7 @@ import {
   useTranslations, useModulesManager,
 } from '@openimis/fe-core';
 import { MODULE_NAME } from '../constants';
+import { formatCommenterName, SYSTEM_COMMENTER_KEY } from '../utils/commenter';
 
 const useStyles = makeStyles(() => ({
   topHeader: {
@@ -79,22 +80,6 @@ const TicketPrintCommentTemplate = forwardRef(({ ticketComments }, ref) => {
   const modulesManager = useModulesManager();
   const { formatMessage } = useTranslations(modulesManager, MODULE_NAME);
 
-  const formatCommenterName = (commenterTypeName, commenter) => {
-    if (!commenterTypeName) return 'Anonymous User';
-
-    if (commenterTypeName === 'individual') {
-      const commenterData = JSON.parse(JSON.parse(commenter));
-      return `Individual: ${commenterData.firstName} ${commenterData.lastName}`;
-    }
-
-    if (commenterTypeName === 'user') {
-      const commenterData = JSON.parse(JSON.parse(commenter));
-      return `User: ${commenterData.username}`;
-    }
-
-    return commenterTypeName;
-  };
-
   const formatDate = (dateStr) => {
     const date = new Date(dateStr);
     return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
@@ -116,7 +101,7 @@ const TicketPrintCommentTemplate = forwardRef(({ ticketComments }, ref) => {
                   style={{ marginBottom: '8px' }}
                 >
                   <strong>
-                    {formatCommenterName(comment.commenterTypeName, comment.commenter)}
+                    {formatCommenterName(comment, formatMessage(SYSTEM_COMMENTER_KEY))}
                     :
                   </strong>
                   {' '}
