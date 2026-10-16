@@ -7,6 +7,7 @@ import AutorenewIcon from '@material-ui/icons/Autorenew';
 import { withStyles } from '@material-ui/core/styles';
 import { TextField, IconButton, InputAdornment } from '@material-ui/core';
 import { useTranslations, useGraphqlQuery } from '@openimis/fe-core';
+import { buildCategoryOptions, isSelectableOption } from '../utils/categoryOptions';
 
 const styles = () => ({
   root: {
@@ -30,6 +31,8 @@ function CategoryPicker(props) {
     label,
     placeholder,
     classes,
+    creatableOnly = false,
+    creatableAlso = [],
   } = props;
   const { formatMessage } = useTranslations('ticket');
   const [inputValue, setInputValue] = useState(value ?? '');
@@ -54,15 +57,9 @@ function CategoryPicker(props) {
     return translated !== key ? translated : name.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
   };
 
-  const buildOptions = (categories) => (categories ?? []).map((cat) => ({
-    label: translateName(cat.name),
-    value: cat.full_name,
-    children: cat.children?.length ? buildOptions(cat.children) : undefined,
-  }));
-
   const rawJson = data?.grievanceConfig?.grievanceCategoriesJson;
   const parsed = typeof rawJson === 'string' ? JSON.parse(rawJson) : rawJson;
-  const options = buildOptions(parsed);
+  const options = buildCategoryOptions(parsed, { creatableOnly, creatableAlso, translateName });
 
   const handleClear = (e) => {
     e.stopPropagation();
@@ -72,6 +69,9 @@ function CategoryPicker(props) {
 
   const handleCascaderChange = (values, selectedOptions = []) => {
     const selected = selectedOptions.length ? selectedOptions[selectedOptions.length - 1] : null;
+    if (!isSelectableOption(selected)) {
+      return;
+    }
     const stringValue = selected?.value ?? null;
     setInputValue(stringValue || '');
     onChange?.(stringValue, selected);
