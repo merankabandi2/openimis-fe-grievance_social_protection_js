@@ -6,14 +6,11 @@ import {
   useTranslations,
 } from '@openimis/fe-core';
 import { fetchGrievanceConfiguration } from '../actions';
+import { MODULE_NAME } from '../constants';
 import {
-  MODULE_NAME,
-  RIGHT_TICKET,
-  RIGHT_TICKET_ADD,
-  RIGHT_TICKET_DELETE,
-  RIGHT_TICKET_EDIT,
-  RIGHT_TICKET_SEARCH,
-} from '../constants';
+  holdsGrievanceConfigurationRights,
+  shouldFetchGrievanceConfiguration,
+} from '../utils/grievanceConfiguration';
 
 function GrievanceConfigurationDialog({
   rights,
@@ -24,16 +21,7 @@ function GrievanceConfigurationDialog({
   const grievanceConfiguration = useSelector((state) => state?.grievanceSocialProtection?.grievanceConfig);
   const fetchedGrievanceConfig = useSelector((state) => state?.grievanceSocialProtection?.fetchedGrievanceConfig);
 
-  const doesUserHaveRights = () => {
-    const rightsArray = [
-      RIGHT_TICKET,
-      RIGHT_TICKET_SEARCH,
-      RIGHT_TICKET_ADD,
-      RIGHT_TICKET_EDIT,
-      RIGHT_TICKET_DELETE,
-    ];
-    return rightsArray.every((right) => rights.includes(right));
-  };
+  const hasRights = holdsGrievanceConfigurationRights(rights);
   const isMatchingConfigObject = (obj) => !(typeof obj !== 'object' || obj === null || Array.isArray(obj));
 
   const isConfigMissing = (config) => Object.values(config).some((field) => {
@@ -47,7 +35,7 @@ function GrievanceConfigurationDialog({
   });
 
   const shouldDisplay = () => grievanceConfiguration
-        && doesUserHaveRights()
+        && hasRights
         && isMatchingConfigObject(grievanceConfiguration)
         && isConfigMissing(grievanceConfiguration);
 
@@ -65,10 +53,10 @@ function GrievanceConfigurationDialog({
   }, [grievanceConfiguration]);
 
   useEffect(() => {
-    if (!fetchedGrievanceConfig) {
+    if (shouldFetchGrievanceConfiguration(rights, fetchedGrievanceConfig)) {
       dispatch(fetchGrievanceConfiguration());
     }
-  }, [fetchedGrievanceConfig]);
+  }, [fetchedGrievanceConfig, hasRights]);
 
   return null;
 }
