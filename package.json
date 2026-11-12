@@ -14,6 +14,7 @@
     "build": "vite build",
     "start": "vite",
     "format": "prettier src -w",
+    "test": "node --test",
     "prepare": "npm run build"
   },
   "devDependencies": {
