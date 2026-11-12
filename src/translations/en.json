@@ -147,5 +147,6 @@
     "ticket.reporter.user.label": "Attending Staff",
     "ticket.terminology.help": "Individual: Personn who submit grievance. Beneficiary: Personn covered by the Benefit Plan/Program",
     "ticket.save.success.title": "Grievance saved",
-    "ticket.save.success.body": "The Grievance was saved successfuly"
+    "ticket.save.success.body": "The Grievance was saved successfuly",
+    "grievanceSocialProtection.comment.systemCommenter": "System"
 }
